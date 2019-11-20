@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+
+  <head>
+    <script src="./elm.js"></script>
+  </head>
+
+  <body>
+    <main></main>
+
+    <div style="border: 1px dotted gray">
+      <p>Not part of elm app:</p>
+      <form onsubmit="return sendComment(this)">
+        <input name="comment" type="text">
+        <input type="submit" value="Comment">
+      </form>
+    </div>
+
+    <script type="text/javascript">
+      window.elmApp = Elm.Main.init({
+        node: document.querySelector('main')
+      });
+
+      function sendComment(form) {
+        var comment = form.elements["comment"].value;
+        // triggers the actual port through the name specified in the elm file
+        window.elmApp.ports.incomingPort.send(comment);
+        return false;
+      }
+    </script>
+  </body>
+</html>
