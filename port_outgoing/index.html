@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+
+  <head>
+    <script src="./elm.js"></script>
+  </head>
+
+  <body>
+    <main></main>
+
+    <div style="border: 1px dotted gray">
+      <p>Not part of elm app:</p>
+      <h2 id="fromPort">Value from port</h2>
+    </div>
+
+    <script type="text/javascript">
+      var app = Elm.Main.init({
+        node: document.querySelector('main')
+      });
+
+      app.ports.outgoingPort.subscribe(function(data) {
+        document.getElementById('fromPort').textContent = data;
+      });
+
+    </script>
+  </body>
+</html>
