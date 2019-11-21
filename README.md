@@ -18,5 +18,6 @@ Then open the `index.html` in that folder.
 
 ## List of examples ##
 
-  * [Incoming ports](port_incoming)
-  * [Outgoing ports](port_outgoing)
+  * [Incoming ports](port_incoming) - How to send information from JavaScript to Elm
+  * [Outgoing ports](port_outgoing) - How to send information from Elm to JavaScript
+  * [Component](component) - How to encapsulate UI functionality into reusable components
