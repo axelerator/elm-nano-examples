@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html>
+
+  <head>
+    <script src="./elm.js"></script>
+    <script type='text/javascript' src='js/PortFunnel.js'></script>
+    <script type='text/javascript' src='js/WebSocket.js'></script>
+  </head>
+
+  <body>
+    <main></main>
+
+    <script type="text/javascript">
+      var app = Elm.Main.init({
+        node: document.querySelector('main')
+      });
+
+      // These are the defaults, so you don't need to pass them.  If you
+      // need to use different port names, you can pass them as the
+      // 'portNames' property of the second parameter to
+      // PortFunnel.subscribe() below:
+      // var portNames = ['cmdPort', 'subPort'];
+      // PortFunnel.subscribe(app, { portNames: portNames });
+      PortFunnel.subscribe(app);
+      // This is used by example/src/simple.elm to parse a JSON string.
+      // You can safely remove it from your shipped code, unless you need
+      // to parse a JSON string into an Elm Json.Encode.Value.
+      // If the ports it wants aren't available, it will do nothing.
+      (function() {
+        var ports = app.ports;
+        var parse = ports.parse;
+        var parseReturn = ports.parseReturn;
+        if (parse && parseReturn) {
+          parse.subscribe(function(string) {
+            var result;
+            try {
+              var val = JSON.parse(string);
+              result = val
+            } catch(err) {
+              result = "" + err;
+            }
+            parseReturn.send(result);
+          });
+        }
+      })();
+
+    </script>
+  </body>
+</html>
