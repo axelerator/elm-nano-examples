@@ -17,21 +17,10 @@ main =
         , subscriptions = subscriptions
         }
 
-type alias Model =
-    { style : Animation.State 
-    , cards : List Card
-    }
+type alias Model = { cards : List Card }
 
 init : ( Model, Cmd Msg )
-init =
-    ( { style =
-            Animation.style
-                [ Animation.left (px 0.0)
-                ]
-      , cards = []
-      }
-    , Cmd.none
-    )
+init = ({ cards = [] }, Cmd.none )
 
 view : Model -> Html Msg
 view model =
@@ -40,16 +29,30 @@ view model =
     , button [onClick (CreateCard)] [text "AddCard"]
     ]
 
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Animation.subscription Animate ([model.style] ++ (List.map (\c -> c.style) model.cards))
-
 type Msg
-    = CreateCard
-    | AddCard Int
-    | Animate Animation.Msg
-    | EnterCard Int
-    | LeaveCard Int
+    = CreateCard            -- request a random number for the new cards content
+    | AddCard Int           -- add the new card and trigger appropiate animation
+    | Animate Animation.Msg -- handle animation progress
+    | FocusCard Int         -- react to user hovering cursor over card
+    | BlurCard Int          -- reverse effect after user removes curser from card
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update action model =
+    case action of
+        FocusCard i ->
+            ({ model | cards = markCardActive model.cards i }, Cmd.none)
+        BlurCard i ->
+            ({ model | cards = markCardInActive model.cards i }, Cmd.none)
+        CreateCard ->
+            ( model, Random.generate AddCard (Random.int 0 (Array.length cardNames)))
+        AddCard i ->
+            ({ model | cards = addCard i model.cards }, Cmd.none)
+        Animate animMsg ->
+            ({ model | cards = List.map (animateCard animMsg) model.cards }, Cmd.none)
+
+-- the animations have to be updated periodically so we have to subscribe to them
+subscriptions : Model -> Sub Msg
+subscriptions model = Animation.subscription Animate (List.map (\c -> c.style) model.cards)
 
 type alias Card = 
   { cardName : String       -- name being displayed on the card
@@ -146,28 +149,8 @@ markCardInActive cards toFocus =
       , style = if i == toFocus then Animation.interrupt ani c.style else c.style
       })) cards
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update action model =
-    case action of
-        EnterCard i ->
-            ({ model | cards = markCardActive model.cards i }, Cmd.none)
-        LeaveCard i ->
-            ({ model | cards = markCardInActive model.cards i }, Cmd.none)
-        CreateCard ->
-            ( model, Random.generate AddCard (Random.int 0 (Array.length cardNames)))
-        AddCard i ->
-            ({ model | cards = addCard i model.cards } , Cmd.none
-            )
-        Animate animMsg ->
-            ({ model
-                | style = Animation.update animMsg model.style
-                , cards = List.map (animateCard animMsg) model.cards
-              }
-            , Cmd.none
-            )
 animateCard : Animation.Msg -> Card -> Card
-animateCard animMsg c =
-  { c | style = Animation.update animMsg c.style }
+animateCard animMsg c = { c | style = Animation.update animMsg c.style }
 
 -- view function for a single card at position i
 cardView i card = div 
@@ -181,8 +164,8 @@ cardView i card = div
                        , style "border" "1px solid gray"
                        , style "border-radius" "2px"
                        , style "transform-origin" "bottom center"
-                       , onMouseEnter (EnterCard i)
-                       , onMouseLeave (LeaveCard i)
+                       , onMouseEnter (FocusCard i)
+                       , onMouseLeave (BlurCard i)
                        ]
                     ++ (if card.focussed then [style "z-index" "10"] else [])
                  ) [text card.cardName]
