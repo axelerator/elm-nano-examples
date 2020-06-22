@@ -1,4 +1,4 @@
-This folder contains a little experimental _hot code replacment_ setup.
+This folder contains a little experimental _hot code replacement_ setup.
 
 **Tested only under MacOS**
 
