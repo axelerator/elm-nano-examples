@@ -77,4 +77,5 @@ view model =
     div []
         [ button [ onClick Left ] [ text "Left: ", text <| fromInt model.left ]
         , button [ onClick Right ] [ text "Right: ", text <| fromInt model.right ]
+        , div [] [ text "LOOK MUM, NO SERVER" ]
         ]
