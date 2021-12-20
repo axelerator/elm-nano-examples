@@ -1,5 +1,5 @@
 This folder brings a little boilerplate setup to get you jumpstarted with a local Elm dev setup without a server or external dependencies.
-Just execute `bin/build.sh`, open the `index.html` and modify the `src/Main.elm` - you'll get instant feedback in your browser window.
+Just execute `bin/build.sh` or `bin/build_linux.sh`, open the `index.html` and modify the `src/Main.elm` - you'll get instant feedback in your browser window.
 
 The only requirement is that you [install Elm](https://guide.elm-lang.org/install/elm.html) itself first.
 
