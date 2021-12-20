@@ -3,7 +3,7 @@ Just execute `bin/build.sh`, open the `index.html` and modify the `src/Main.elm`
 
 The only requirement is that you [install Elm](https://guide.elm-lang.org/install/elm.html) itself first.
 
-**Tested only under MacOS**
+**Tested only under MacOS and Unix**
 
 The main file is the `bin/build.sh`. Executing will start watching for file changes in the `src` folder and recompile the Elm app.
 
